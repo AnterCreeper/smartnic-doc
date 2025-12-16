@@ -9,7 +9,7 @@
 为了满足性能需求，数据中心搭载了大量计算机组成的集群，数据中心内和数据中心间需要高性能网络以满足集群间计算机通讯的需要，计算机系统总线向外衍生。
 2. `InfiniBand` 支持高速低延迟的互联。然而，随着以太网的蓬勃发展，为了避免在数据中心构建两套网络的负担，人们转向通过以太网承载这些功能(e.g. `RoCE`, `NVMe over RoCE`)。
 <div align="center">
-<image src="../assets/infiniband.webp" alt="Infiniband Diagram" width="512"></image>
+<img src="../assets/infiniband.webp" alt="Infiniband Diagram" width="512">
 </div>
 
  - RDMA: 在高性能计算和数据中心网络领域，通常使用 RDMA 技术以完成科学计算、数据库、存储等负载。用户空间程序之间直接完成对对方远端内存的 `Read`/`Write`/`Atomic` 操作。
@@ -19,12 +19,12 @@
 互联网已经成为基础设施，用户可以随时订阅一些云计算资源，数据中心灵活地按需提供给用户包括计算、存储、网络、数据库等算力形态。
  - 网络加速: 虚拟机网络虚拟化，硬件的网卡需要虚拟化为无数个虚拟的逻辑网卡接入到一个个虚拟机，并为这些虚拟的逻辑网卡接入到相应的网络，完成对网络交换和管理功能的硬件卸载。
 <div align="center">
-<image src="../assets/ovs.png" alt="Open vSwitch Diagram" width="384"></image>
+<img src="../assets/ovs.png" alt="Open vSwitch Diagram" width="384">
 </div>
  
  - 存储虚拟化: 云计算厂商将存储集中池化, 计算节点通过网络远程访问存储池(如 NVME-oF)，以实现集中管理和分配，具有更高的灵活性和扩展性。需要硬件卸载以减少 CPU 开销。
 <div align="center">
-<image src="../assets/san.jpg" alt="SAN Diagram" width="512"></image>
+<img src="../assets/san.jpg" alt="SAN Diagram" width="512">
 </div>
 
 #### 流量管理与加密
@@ -39,7 +39,7 @@
 ## Category of Architecture
 智能网卡的体系结构发展也经历了如同 GPU 一样的: 从固定管线、可编程管线，到异构计算系统的过程。
 <div align="center">
-<image src="../assets/history.png" alt="NIC History" width="512"></image>
+<img src="../assets/history.png" alt="NIC History" width="512">
 </div>
 
 #### Foundational NIC (obsoleted)
@@ -63,10 +63,10 @@
 #### Soc可编程智能网卡 (DPU)
  - 通过集成 ASIC / FPGA 和 CPU 为此提供了一种平衡的解决方案。SoC 方案集成了独立的内存和存储组件，有的还配备了丰富的硬化加速器，可以高效地支持更为复杂的网内计算功能。
 <div align="center">
-<image src="../assets/pensando.png" alt="SoC Diagram" width="384"></image>
+<img src="../assets/pensando.png" alt="SoC Diagram" width="384">
 </div>
 <div align="center">
-<image src="../assets/dpu.png" alt="CPU+FPGA Diagram" width="512"></image>
+<img src="../assets/dpu.png" alt="CPU+FPGA Diagram" width="512">
 </div>
 
 | Architecture | Cost | Programmable | Flexibility | Performance | Product |
@@ -79,7 +79,7 @@
 
 ## Category of Mechanism
 <div align="center">
-<image src="../assets/on_off_path.png" alt="Mechanism Compare" width="512"></image>
+<img src="../assets/on_off_path.png" alt="Mechanism Compare" width="512">
 </div>
 
 #### On-Path SmartNICs
@@ -97,7 +97,7 @@
 - 慢路径经由 Off-Path 处理器(以及 DSA 专用加速器, e.g. LZ77, Crypto)，用于处理较为复杂的逻辑
 > 为什么慢路径不可以直接发送至 CPU 经由操作系统/DPDK 协议栈处理? 个人观点: 其一是计算机系统总线(e.g. PCIE)和网络之间巨大的性能鸿沟造成的——在网络高歌猛进的同时，系统总线的发展依然止步不前，从而造成巨大的带宽和延迟的瓶颈。其二是 CPU 处理器 "通用" 的桎梏, 在内存系统的取舍上更多的选择了加大内存容量，而其内存带宽较为宝贵。
 <div align="center">
-<image src="../assets/bf3_arch.png" alt="BF3 Diagram" width="512"></image>
+<img src="../assets/bf3_arch.png" alt="BF3 Diagram" width="512">
 </div>
 
 ## Development Kit
@@ -106,7 +106,7 @@
 ### Commercial
 #### NVIDIA BlueField-3
 <div align="center">
-<image src="../assets/dpa.webp" alt="NVIDIA DPA" width="512"></image>
+<img src="../assets/dpa.webp" alt="NVIDIA DPA" width="512">
 </div>
 
 ### Academic (Open Source)
