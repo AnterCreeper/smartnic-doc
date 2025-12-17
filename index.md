@@ -29,7 +29,7 @@ This Project is aimed to provide an overview of smartnic technology.
 该项目旨在提供 SmartNIC 技术的概览。
 
 If any questions, welcome for Issues & PRs   
-如果有疑问，欢迎提交Issues或PR
+如果有疑问，欢迎提交 Issues 或 PR
 
 ## License
 
