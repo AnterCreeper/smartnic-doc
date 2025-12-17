@@ -27,7 +27,7 @@ RMT（Reconfigurable Match Table）主要由一个解析器和任意数量的匹
 ## Case Study
 ### NVIDIA BlueField-3
 <div align="center">
-<img src="../assets/dpa.webp" alt="NVIDIA DPA" width="768">
+<img src="../assets/02/dpa.webp" alt="NVIDIA DPA" width="768">
 </div>
 
 | | |
