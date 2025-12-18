@@ -178,7 +178,6 @@ Coyote 是一个开源 shell，旨在简化数据中心和云系统中 FPGA 的�
 #### More...
 
 ## Reference
-
  - E. F. Kfoury, S. Choueiri, A. Mazloum, A. AlSabeh, J. Gomez, and J. Crichigno, "A comprehensive survey on smartNICs: Architectures, development models, applications, and research directions", IEEE Access, vol. 12, pp. 107297–107336, 2024. https://doi.org/10.1109/ACCESS.2024.3437203
+ - Luizelli, M., Vogt, F., De Matos, G., Cordeiro, W., et al., "SmartNICs: The Next Leap in Networking", "Minicursos do XLII Simpósio Brasileiro de Redes de Computadores e Sistemas Distribuídos" (pp.40-89), https://smartness2030.tech/wp-content/uploads/2024/05/Ch2.pdf
  - X. Chen et al., "Demystifying Datapath Accelerator Enhanced Off-path SmartNIC", 2024 IEEE 32nd International Conference on Network Protocols (ICNP), Charleroi, Belgium, 2024, pp. 1-12. https://doi.org/10.1109/ICNP61940.2024.10858560
- - Pat Bosshart, Glen Gibb, Hun-Seok Kim, George Varghese, Nick McKeown, Martin Izzard, Fernando Mujica, and Mark Horowitz, "Forwarding metamorphosis: fast programmable match-action processing in hardware for SDN", SIGCOMM Comput. Commun. Rev. 43, 4 (October 2013), 99–110. https://doi.org/10.1145/2534169.2486011
