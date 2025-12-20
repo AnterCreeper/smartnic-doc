@@ -10,7 +10,7 @@ hero:
     - theme: brand
       text: Let's Go
       link: /docs/01-intro
-features_title: Include:
+features_title: What is included
 features:
   - icon: 🧭
     title: History
