@@ -1,5 +1,9 @@
 # Chapter 2: Architecture
 
+## Adaptive Network Architecture
+
+为了满足多变的网络应用的需要, 一方面架构需要提供卓越的性能满足应用; 另一方面, 需要提供充分的、易于使用的可编程环境, 具有更强的灵活性(适应性)，可降低开发周期和成本。
+
 ## RMT 流水线
 <div align="center">
 <img src="../assets/02/rmt.png" alt="RMT Diagram" width="768">
@@ -66,6 +70,8 @@ MPU 是专门面向数据流处理设计的核心, 支持各种复杂的操作�
 面向数据流处理器, 一方面增加了包头向量处理的数据通路和位域操作的加速指令, 另一方面为了减少核心在处理来自不同流量报文的上下文切换开销, 增加了硬件层面的线程调度支持。
 
 ## Case Study
+### Microsoft ClickNP
+
 ### UT NS PANIC
 [https://github.com/lockkkk/PANIC](https://github.com/lockkkk/PANIC)  
 PANIC 是一款新型可编程 100Gbps 网卡, 可提供跨租户性能隔离和跨并行卸载引擎的低延迟负载均衡, 能够随着线速的提高而扩展, 从而支持大量的卸载功能和较长的卸载链。

@@ -3,6 +3,7 @@
 ## New Era of Network
 
 随着计算机应用程序的发展, 催生出了众多新的模式, 这些趋势要求着计算机系统的与时俱进发展以适应新的计算形态。
+`Those who do not study history, are doomed to repeat it.` 为了不重蹈覆辙, 学习历史是很有必要的。
 
 #### 高性能网络
 1. 随着互联网进入高速发展阶段, 线上业务和用户规模的不断增加, 给计算机系统的承载能力带来了很大挑战。IO 总线性能进展缓慢, 成为了系统瓶颈。    
@@ -44,6 +45,26 @@
 - 分布式数据库、键值存储...
 - `RPC` 远程调用
 - `MPI` 集合通信
+
+## Pattern of Traffic
+#### Incast
+当服务偶然间突然被许多客户端同时请求时, 会出现这种模式。例如, 有 100 个客户端想要向同一存储服务器提交一个 10KiB 的写事务。由于不知道即将发生的拥塞, 所有客户端会以全带宽发送数据包, 从而迅速填满网络缓冲区, 产生大量尾延迟。尤其的, 当事务体积小于带宽-延迟积时, 拥塞控制机制无法在事务完成之前获得可靠信号。考虑到, 带宽的不断增长会将越来越多的工作负载推向这一关键区域。
+
+#### 集合通信
+该模式在许多高性能计算（HPC）和人工智能（AI）训练工作负载中常见: 计算步骤与通常用于同步进程的全局通信步骤交错进行。无感知意味着应用程序的通信 Pattern 取决于少数静态的确定的参数（如大小或进程数量）, 而不取决于所处理的数据。因此, 这类工作负载可以通过算法或网络计算(e.g. NVIDIA SHARP)避免 Incast 产生。此外, 在 AI 训练任务中, 对网络高带宽需求比较敏感。而这种极端的带宽需求，一方面需要更先进的负载均衡和路由技术, 例如 `OpenFlow` 和 `Segment Routing`; 另一方面需要新的传输协议(如支持 `DDP` 乱序传输、`MultiPath Spray` 等)以及更多的算力(如重传和滑动窗口拥塞控制)。
+
+#### 低延迟
+对于某些工作负载而言, 如具有复杂的、依赖于数据的消息链等, 消息延迟对性能起着至关重要的作用。这些工作负载必须容忍低效执行，以追求最低延迟。
+<div align="center">
+
+| 场景 | 低延迟 | 高带宽 | InCast | QP 数量 |
+|:----:|:------:|:------:|:------:|:-------:|
+| HPC | ✅ | ❌ | ❌ | ✅ |
+| Database | ✅ | ❌ | ❌ | ❌ |
+| Storage | ✅ | ❌ | ✅ | ✅ |
+| AI | ❌ | ✅ | ✅ | ✅ |
+
+</div>
 
 ## Category of Architecture
 智能网卡的体系结构发展也经历了如同 GPU 一样的: 从固定管线、可编程管线, 到异构计算系统的过程。
@@ -92,6 +113,10 @@
 </div>
 
 ## Category of Mechanism
+由于网络应用多样的复杂负载以及网络本身的特点，这要求着其架构具有灵活的适应性:
+ - HPC: 极低延迟
+ - AI: 高带宽, 同时需要拥塞控制和丢包重传 => 充足的算力
+ - 存储、安全等
 <div align="center">
 <img src="../assets/01/on_off_path.png" alt="Mechanism Compare" width="512">
 </div>
@@ -99,7 +124,7 @@
 #### On-Path SmartNICs
 处理逻辑被布置在网络路径上, 被称为`On-Path`。网卡会根据匹配表匹配和调度, 将包分配至核心(或经由可编程流水线), 按照匹配的动作处理沿通信路径传播的每个数据包。
  - On-Path 可支持实现最新的拥塞控制算法和网络协议, 也可以实现对传统网络的卸载(e.g. TOE)。
- - 如果微码程序本体过大或执行时间过长, 可能会导致发送到主机的常规网络请求性能显著下降。
+ - 如果微码程序本体过大或执行时间过长(算力低), 可能会导致发送到主机的常规网络请求性能显著下降。
  - 由于使用了低级 API, 编程具有挑战性。(e.g. 1000+ pages of documents, 10000+ lines of codes)
 <div align="center">
 <img src="../assets/01/pipeline.svg" alt="Pipeline" width="512">
@@ -107,16 +132,14 @@
 
 #### Off-Path SmartNICs
 在数据平面旁集成大型计算核心和内存以运行卸载逻辑, 并运行通用操作系统(如 Linux)。由于位于网络处理流水线的关键路径之外, 被称为`Off-Path`。核心通过专用接口与网卡核心和主机相连, 通过网卡上嵌入式交换机的转发规则将需要操作的流量转发至核心进行处理。
- - 支持完整内核和网络协议栈, 支持复杂的卸载操作, 编程复杂度低, 对主机的影响较低。
- - 相比 On-Path 引入了较高额外的延迟, 逐包处理性能不佳。
+ - 支持完整内核和网络协议栈, 支持复杂的卸载操作(算力强), 编程复杂度低, 对主机的影响较低。
+ - 相比 On-Path 引入了较高额外的延迟。
 <div align="center">
 <img src="../assets/01/bf_switch.webp" alt="BF NIC eSwitch" width="384">
 </div>
 
 #### 混合方案
-通过同时集成 Off-Path 的少数大型 CPU 核心和 On-Path 的大量包处理小核的异构架构以同时支持不同复杂度的加速功能。
-- 快路径经由 On-Path 处理器, 用于处理简单高性能的逻辑
-- 慢路径经由 Off-Path 处理器(以及 DSA 专用加速器), 用于处理较为复杂的逻辑
+通过同时集成 Off-Path 的少数大型 CPU 核心(以及大型加速器硬核)和 On-Path 大量低延迟网络处理核心(或 ASIC 固化逻辑)的异构架构以同时支持不同复杂度的加速功能。通过 ASIC 加速经常性路径，并采用通用 CPU 增加可编程性。
 <div align="center">
 <img src="../assets/01/bf3_arch.png" alt="BF3 Diagram" width="512">
 </div>
@@ -173,6 +196,10 @@ Coyote 是一个开源 shell, 旨在简化数据中心和云系统中 FPGA 的�
 
 其提供了可扩展的网络协议栈, 如 TCP/IP、RoCEv2、UDP/IP, 支持高达 100Gbps 线速。
 
+类似的工作还有: 
+- https://github.com/slaclab/surf
+- https://github.com/BerkeleyLab/Bedrock
+
 > Ramhorst, Benjamin, Dario Korolija, Maximilian Jakob Heer, Jonas Dann, Luhao Liu, and Gustavo Alonso, "Coyote v2: Raising the Level of Abstraction for Data Center FPGAs", Proceedings of the ACM SIGOPS 31st Symposium on Operating Systems Principles (New York, NY, USA), SOSP 25, October 12, 639–54. https://doi.org/10.1145/3731569.3764845.
 
 #### More...
@@ -180,3 +207,4 @@ Coyote 是一个开源 shell, 旨在简化数据中心和云系统中 FPGA 的�
 ## Reference
  - E. F. Kfoury, S. Choueiri, A. Mazloum, A. AlSabeh, J. Gomez, and J. Crichigno, "A comprehensive survey on smartNICs: Architectures, development models, applications, and research directions", IEEE Access, vol. 12, pp. 107297–107336, 2024. https://doi.org/10.1109/ACCESS.2024.3437203
  - Luizelli, M., Vogt, F., De Matos, G., Cordeiro, W., et al., "SmartNICs: The Next Leap in Networking", "Minicursos do XLII Simpósio Brasileiro de Redes de Computadores e Sistemas Distribuídos" (pp.40-89), https://smartness2030.tech/wp-content/uploads/2024/05/Ch2.pdf
+ - T. Hoefler et al., "Data Center Ethernet and Remote Direct Memory Access: Issues at Hyperscale", IEEE Computer, vol. 56, no. 7, pp. 67-77, July 2023, https://doi.org/10.1109/MC.2023.3261184
